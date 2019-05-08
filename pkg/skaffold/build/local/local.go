@@ -19,6 +19,7 @@ package local
 import (
 	"context"
 	"fmt"
+	"github.com/GoogleContainerTools/skaffold/pkg/skaffold/build/buildpacks"
 	"io"
 	"strings"
 
@@ -99,6 +100,9 @@ func (b *Builder) runBuildForArtifact(ctx context.Context, out io.Writer, artifa
 
 	case artifact.CustomArtifact != nil:
 		return b.buildCustom(ctx, out, artifact, tag)
+
+	case artifact.BuildpacksArtifact != nil:
+		return b.buildBuildpacks(ctx, out, artifact.BuildpacksArtifact, tag)
 	default:
 		return "", fmt.Errorf("undefined artifact type: %+v", artifact.ArtifactType)
 	}
@@ -125,6 +129,9 @@ func (b *Builder) DependenciesForArtifact(ctx context.Context, a *latest.Artifac
 
 	case a.CustomArtifact != nil:
 		paths, err = custom.GetDependencies(ctx, a.Workspace, a.CustomArtifact)
+
+	case a.BuildpacksArtifact != nil:
+		paths, err = buildpacks.GetDependencies(ctx, a.Workspace, a.BuildpacksArtifact)
 
 	default:
 		return nil, fmt.Errorf("undefined artifact type: %+v", a.ArtifactType)

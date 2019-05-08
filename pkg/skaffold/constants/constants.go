@@ -62,6 +62,8 @@ const (
 
 	DefaultRPCPort     = 50051
 	DefaultRPCHTTPPort = 50052
+
+	DefaultBuildpacksBuilder = "cloudfoundry/cnb:bionic"
 )
 
 var (

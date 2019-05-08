@@ -65,6 +65,7 @@ func Set(c *latest.SkaffoldConfig) error {
 		setDefaultWorkspace(a)
 		defaultToDockerArtifact(a)
 		setDefaultDockerfile(a)
+		setBuildpacksBuilder(a)
 	}
 
 	return nil
@@ -144,6 +145,15 @@ func setDefaultDockerfile(a *latest.Artifact) {
 	if a.DockerArtifact != nil {
 		SetDefaultDockerArtifact(a.DockerArtifact)
 	}
+}
+
+func setBuildpacksBuilder(a *latest.Artifact) {
+	if a.BuildpacksArtifact != nil {
+		SetBuildpacksBuilder(a.BuildpacksArtifact)
+	}
+}
+func SetBuildpacksBuilder(a *latest.BuildpacksArtifact) {
+	a.Builder = valueOrDefault(a.Builder, constants.DefaultBuildpacksBuilder)
 }
 
 // SetDefaultDockerArtifact sets defaults on docker artifacts

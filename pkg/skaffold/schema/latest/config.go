@@ -552,6 +552,9 @@ type ArtifactType struct {
 	// KanikoArtifact *alpha* builds images using [kaniko](https://github.com/GoogleContainerTools/kaniko).
 	KanikoArtifact *KanikoArtifact `yaml:"kaniko,omitempty" yamltags:"oneOf=artifact"`
 
+	// BuildpacksArtifact *alpha* builds images using [Cloud Native Buildpacks](https://github.com/buildpack/pack).
+	BuildpacksArtifact *BuildpacksArtifact `yaml:"buildpacks,omitempty" yamltags:"oneOf=artifact"`
+
 	// CustomArtifact *alpha* builds images using a custom build script written by the user.
 	CustomArtifact *CustomArtifact `yaml:"custom,omitempty" yamltags:"oneOf=artifact"`
 }
@@ -604,6 +607,31 @@ type KanikoArtifact struct {
 	// Cache configures Kaniko caching. If a cache is specified, Kaniko will
 	// use a remote cache which will speed up builds.
 	Cache *KanikoCache `yaml:"cache,omitempty"`
+}
+
+// BuildPacksArtifact *alpha* describes an artifact built using [pack](https://github.com/buildpack/pack)
+type BuildpacksArtifact struct {
+
+	// Builder is an image that contains a set of buildpacks,
+	// see [Builders explained](https://github.com/buildpack/pack#builders-explained).
+	// Defaults to `cloudfoundry/cnb:bionic`
+	Builder string `yaml:"builder,omitempty"`
+
+	// AppPath is the directory that contains the application to be build, relative to the workspace.
+	// Defaults to `.`.
+	AppPath string `yaml:"appPath,omitempty"`
+
+	// Buildpack can be specified to override the buildpack detection process. It accepts the ID of a buildpack located
+	// in a builder or a directory relative to the workspace.
+	Buildpack []string `yaml:"buildpack,omitempty"`
+
+	// BuildArgs variables passed to the build.  If a key contains no value, the value will be taken from
+	// the current environment at the time this command is executed.
+	// For example: `{"key1": "value1", "key2": ""}`.
+	BuildArgs map[string]*string `yaml:"buildArgs,omitempty"`
+
+	// Ignore specifies the paths that should be ignored by skaffold's file watcher.
+	Ignore []string `yaml:"ignore,omitempty"`
 }
 
 // DockerArtifact *beta* describes an artifact built from a Dockerfile,
